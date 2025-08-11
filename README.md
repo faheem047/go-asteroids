@@ -4,7 +4,7 @@ A classic Asteroids arcade game implementation written in Go using the Ebitengin
 
 ## Screenshot
 
-![Game Screenshot](assets/images/player.png)
+![Game Screenshot](assets/images/gameplay.png)
 
 ## Features
 
