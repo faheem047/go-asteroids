@@ -26,10 +26,19 @@ type Player struct {
 
 func NewPlayer(game *Game) *Player {
 	sprite := assets.PlayerSprite
+	// Center the sprite
+	bounds := sprite.Bounds()
+	halfW := float64(bounds.Dx()) / 2
+	halfH := float64(bounds.Dy()) / 2
+	pos := Vector{
+		X: ScreenWidth/2 - halfW,
+		Y: ScreenHeight/2 - halfH,
+	}
 
 	p := &Player{
-		sprite: sprite,
-		game:   game,
+		sprite:   sprite,
+		game:     game,
+		position: pos,
 	}
 
 	return p
