@@ -10,6 +10,8 @@ import (
 const (
 	roationPerSecond = math.Pi
 	maxAcceleration  = 8.0
+	ScreenWidth      = 1280
+	ScreenHeight     = 720
 )
 
 var currAcceleration float64
@@ -62,6 +64,7 @@ func (p *Player) Update() {
 }
 func (p *Player) acceleration() {
 	if ebiten.IsKeyPressed(ebiten.KeyUp) {
+		p.keepOnScreen()
 		if currAcceleration < maxAcceleration {
 			currAcceleration = p.playerVelocity + 4.00
 		}
@@ -74,6 +77,21 @@ func (p *Player) acceleration() {
 		dy := math.Sin(p.rotation) * currAcceleration
 		p.position.X += dx
 		p.position.Y += dy
+	}
+
+}
+func (p *Player) keepOnScreen() {
+	if p.position.X > ScreenWidth {
+		p.position.X = 0
+	}
+	if p.position.X > 0 {
+		p.position.X = ScreenWidth
+	}
+	if p.position.Y > ScreenHeight {
+		p.position.Y = 0
+	}
+	if p.position.Y < 0 {
+		p.position.Y = ScreenHeight
 	}
 
 }
