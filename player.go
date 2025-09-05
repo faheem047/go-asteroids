@@ -75,32 +75,32 @@ func (p *Player) acceleration() {
 	if ebiten.IsKeyPressed(ebiten.KeyUp) {
 		p.keepOnScreen()
 		if currAcceleration < maxAcceleration {
-			currAcceleration = p.playerVelocity + 4.00
+			currAcceleration = p.playerVelocity + 4
 		}
-		if currAcceleration >= maxAcceleration {
-			currAcceleration = maxAcceleration
+		if currAcceleration >= 8 {
+			currAcceleration = 8
 		}
 		p.playerVelocity = currAcceleration
 
-		dx := math.Cos(p.rotation) * -currAcceleration
-		dy := math.Sin(p.rotation) * currAcceleration
+		dx := math.Sin(p.rotation) * currAcceleration
+		dy := math.Cos(p.rotation) * -currAcceleration
 		p.position.X += dx
 		p.position.Y += dy
 	}
 
 }
 func (p *Player) keepOnScreen() {
-	if p.position.X > ScreenWidth {
+	if p.position.X >= float64(ScreenWidth) {
 		p.position.X = 0
 	}
-	if p.position.X > 0 {
-		p.position.X = ScreenWidth
+	if p.position.X < 0 {
+		p.position.X = float64(ScreenWidth)
 	}
-	if p.position.Y > ScreenHeight {
+	if p.position.Y >= float64(ScreenHeight) {
 		p.position.Y = 0
 	}
 	if p.position.Y < 0 {
-		p.position.Y = ScreenHeight
+		p.position.Y = float64(ScreenHeight)
 	}
 
 }
