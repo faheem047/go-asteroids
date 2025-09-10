@@ -16,7 +16,7 @@ var assets embed.FS
 
 var PlayerSprite = mustLoadImage("images/player.png")
 var TitleFont = mustLoadFontFace("fonts/title.ttf")
-var MeteorsSprites = mustLoadImages("images/meteors/*.png")
+var MeteorSprites = mustLoadImages("images/meteors/*.png")
 var MeteorSpritesSmall = mustLoadImages("images/meteors-small/*.png")
 
 func mustLoadImages(path string) []*ebiten.Image {
