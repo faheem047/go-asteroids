@@ -54,10 +54,11 @@ func (s *SceneManager) Draw(r *ebiten.Image) {
 }
 
 // Update updates the scene for the next draw.
-func (s *SceneManager) Update(_ *Input) error {
+func (s *SceneManager) Update(input *Input) error {
 	if s.transitionCount == 0 {
 		return s.current.Update(&State{
 			SceneManager: s,
+			Input:        input,
 		})
 	}
 
