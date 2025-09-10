@@ -1,4 +1,4 @@
-module go-asteroids-
+module go-asteroids
 
 go 1.23.3
 
