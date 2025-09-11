@@ -39,6 +39,9 @@ func NewGameScene() *GameScene {
 func (g *GameScene) Update(state *State) error {
 	g.player.Update()
 	g.spawnMeteors()
+	for _, m := range g.meteors {
+		m.Update()
+	}
 	g.speedUpMeteors()
 	return nil
 }
