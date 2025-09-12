@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/solarlune/resolv"
 )
 
 const (
@@ -21,6 +22,7 @@ type GameScene struct {
 	meteors          map[int]*Meteor
 	meteorsForLevel  int
 	velocityTimer    *Timer
+	space            *resolv.Space
 }
 
 func NewGameScene() *GameScene {
@@ -31,8 +33,10 @@ func NewGameScene() *GameScene {
 		meteors:          make(map[int]*Meteor),
 		meteorsForLevel:  2,
 		meteorCount:      0,
+		space:            resolv.NewSpace(ScreenWidth, ScreenHeight, 16, 16),
 	}
 	g.player = NewPlayer(g)
+	g.space.Add(g.player.playerObj)
 	return g
 }
 
@@ -61,6 +65,7 @@ func (g *GameScene) spawnMeteors() {
 		g.meteorSpawnTimer.Reset()
 		if len(g.meteors) < g.meteorsForLevel && g.meteorCount < g.meteorsForLevel {
 			m := NewMeteor(g.baseVelocity, g, len(g.meteors)-1)
+			g.space.Add(m.meteorObj)
 			g.meteorCount++
 			g.meteors[g.meteorCount] = m
 		}
