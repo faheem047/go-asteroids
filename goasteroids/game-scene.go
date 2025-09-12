@@ -1,6 +1,7 @@
 package goasteroids
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -47,6 +48,7 @@ func (g *GameScene) Update(state *State) error {
 		m.Update()
 	}
 	g.speedUpMeteors()
+	g.checkCollisions()
 	return nil
 }
 func (g *GameScene) Draw(screen *ebiten.Image) {
@@ -77,5 +79,14 @@ func (g *GameScene) speedUpMeteors() {
 	if g.velocityTimer.IsReady() {
 		g.velocityTimer.Reset()
 		g.baseVelocity += meteorSpeedUpAmount
+	}
+}
+
+func (g *GameScene) checkCollisions() {
+	for _, m := range g.meteors {
+		if m.meteorObj.IsIntersecting(g.player.playerObj) {
+			data := m.meteorObj.Data().(*ObjectData)
+			fmt.Println("Meteor hit player", data.index)
+		}
 	}
 }
