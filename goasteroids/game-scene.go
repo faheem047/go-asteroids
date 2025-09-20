@@ -81,6 +81,7 @@ func (g *GameScene) Update(state *State) error {
 	g.isPlayerCollidingWithMeteor()
 
 	g.isMeteorHitByPlayerLaser()
+	g.cleanUpMeteorsAndAliens()
 
 	return nil
 }
@@ -164,5 +165,17 @@ func (g *GameScene) isPlayerCollidingWithMeteor() {
 			data := m.meteorObj.Data().(*ObjectData)
 			fmt.Println("Player collided with meteor", data.index)
 		}
+	}
+}
+func (g *GameScene) cleanUpMeteorsAndAliens() {
+	g.cleanUpTimer.Update()
+	if g.cleanUpTimer.IsReady() {
+		for i, m := range g.meteors {
+			if m.sprite == g.explosionSprite || m.sprite == g.explosionSmallSprite {
+				delete(g.meteors, i)
+				g.space.Remove(m.meteorObj)
+			}
+		}
+		g.cleanUpTimer.Reset()
 	}
 }
