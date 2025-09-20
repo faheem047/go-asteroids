@@ -1,8 +1,8 @@
 package goasteroids
 
 import (
-	"fmt"
 	"go-asteroids/assets"
+	"log"
 	"math/rand"
 	"time"
 
@@ -35,6 +35,7 @@ type GameScene struct {
 	explosionSprite      *ebiten.Image
 	explosionFrames      []*ebiten.Image
 	cleanUpTimer         *Timer
+	playerIsDead         bool
 }
 
 // NewGameScene is a factory method for producing a new game. It's called once,
@@ -66,6 +67,10 @@ func NewGameScene() *GameScene {
 func (g *GameScene) Update(state *State) error {
 	g.player.Update()
 
+	g.isPlayerDying()
+
+	g.isPlayerDead(state)
+
 	g.spawnMeteors()
 
 	for _, m := range g.meteors {
@@ -81,6 +86,7 @@ func (g *GameScene) Update(state *State) error {
 	g.isPlayerCollidingWithMeteor()
 
 	g.isMeteorHitByPlayerLaser()
+
 	g.cleanUpMeteorsAndAliens()
 
 	return nil
@@ -114,6 +120,7 @@ func (g *GameScene) isMeteorHitByPlayerLaser() {
 					m.sprite = g.explosionSmallSprite
 					g.score++
 				} else {
+					log.Println("hit large meteor")
 					// Large meteor
 					oldPos := m.position
 
@@ -132,6 +139,33 @@ func (g *GameScene) isMeteorHitByPlayerLaser() {
 					}
 				}
 			}
+		}
+	}
+}
+
+func (g *GameScene) isPlayerDying() {
+	if g.player.isDying {
+		g.player.dyingTimer.Update()
+		if g.player.dyingTimer.IsReady() {
+			g.player.dyingTimer.Reset()
+			g.player.dyingCounter++
+			if g.player.dyingCounter == 12 {
+				g.player.isDying = false
+				g.player.isDead = true
+			} else if g.player.dyingCounter < 12 {
+				g.player.sprite = g.explosionFrames[g.player.dyingCounter]
+			} else {
+				// Do nothing.
+			}
+		}
+	}
+}
+
+func (g *GameScene) isPlayerDead(state *State) {
+	if g.playerIsDead {
+		g.player.livesRemaining--
+		if g.player.livesRemaining == 0 {
+			state.SceneManager.GoToScene(NewGameScene())
 		}
 	}
 }
@@ -162,11 +196,16 @@ func (g *GameScene) speedUpMeteors() {
 func (g *GameScene) isPlayerCollidingWithMeteor() {
 	for _, m := range g.meteors {
 		if m.meteorObj.IsIntersecting(g.player.playerObj) {
-			data := m.meteorObj.Data().(*ObjectData)
-			fmt.Println("Player collided with meteor", data.index)
+			if !g.player.isShielded {
+				m.game.player.isDying = true
+				break
+			} else {
+				// Bounce the meteor.
+			}
 		}
 	}
 }
+
 func (g *GameScene) cleanUpMeteorsAndAliens() {
 	g.cleanUpTimer.Update()
 	if g.cleanUpTimer.IsReady() {
