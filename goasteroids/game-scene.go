@@ -200,7 +200,7 @@ func (g *GameScene) isPlayerCollidingWithMeteor() {
 				m.game.player.isDying = true
 				break
 			} else {
-				// Bounce the meteor.
+				//]kfk.
 			}
 		}
 	}
